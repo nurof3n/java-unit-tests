@@ -5,6 +5,8 @@ import com.db.javaunittests.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Iterable<User> findAllUsers() {
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
@@ -30,5 +32,18 @@ public class UserService {
 
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
+    }
+
+    /**
+     * @return list of all the users in the database, sorted by total number of orders of the user.
+     */
+    public List<User> getUsersSortedByNumberOfOrders() {
+        List<User> users = findAllUsers();
+        users.sort(Comparator.comparingInt(u -> u.getOrderHistory().size()));
+        return users;
     }
 }

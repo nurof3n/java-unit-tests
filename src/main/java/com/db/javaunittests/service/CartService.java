@@ -5,6 +5,8 @@ import com.db.javaunittests.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,7 @@ public class CartService {
         return cartRepository.findById(id);
     }
 
-    public Iterable<Cart> findAllCarts() {
+    public List<Cart> findAllCarts() {
         return cartRepository.findAll();
     }
 
@@ -30,5 +32,18 @@ public class CartService {
 
     public void deleteCartById(Long id) {
         cartRepository.deleteById(id);
+    }
+
+    public void deleteAllCarts() {
+        cartRepository.deleteAll();
+    }
+
+    /**
+     * @return a list of all the carts ordered by the total quantity of products in the cart
+     */
+    public List<Cart> getCartsSortedByQuantity() {
+        List<Cart> carts = findAllCarts();
+        carts.sort(Comparator.comparingInt(Cart::getTotalQuantity));
+        return carts;
     }
 }

@@ -5,6 +5,7 @@ import com.db.javaunittests.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,7 @@ public class WishlistService {
         return wishlistRepository.findById(id);
     }
 
-    public Iterable<Wishlist> findAllWishlists() {
+    public List<Wishlist> findAllWishlists() {
         return wishlistRepository.findAll();
     }
 
@@ -30,5 +31,9 @@ public class WishlistService {
 
     public void deleteWishlistById(Long id) {
         wishlistRepository.deleteById(id);
+    }
+
+    public void deleteAllWishlists() {
+        wishlistRepository.deleteAll();
     }
 }

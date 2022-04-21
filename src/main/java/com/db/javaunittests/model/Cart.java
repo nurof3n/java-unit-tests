@@ -30,6 +30,13 @@ public class Cart {
         this.products.remove(product);
     }
 
+    /**
+     * @return the total quantity of all products in the cart
+     */
+    public Integer getTotalQuantity() {
+        return products.stream().mapToInt(Product::getQuantity).sum();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
