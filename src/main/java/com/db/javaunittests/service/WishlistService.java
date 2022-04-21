@@ -53,8 +53,7 @@ public class WishlistService {
         Optional<Wishlist> wishlist = findWishlistById(id);
         if (wishlist.isPresent()) {
             wishlist.get().addProduct(product);
-            updateWishlist(wishlist.get());
-            return wishlist.get();
+            return updateWishlist(wishlist.get());
         } else {
             throw new IllegalArgumentException("Wishlist with id " + id + " does not exist.");
         }
@@ -65,12 +64,13 @@ public class WishlistService {
      *
      * @param id      the id of the wishlist
      * @param product the product to remove
+     * @return the updated wishlist
      */
-    public void removeFromWishlist(Long id, Product product) {
+    public Wishlist removeFromWishlist(Long id, Product product) {
         Optional<Wishlist> wishlist = findWishlistById(id);
         if (wishlist.isPresent()) {
             wishlist.get().removeProduct(product);
-            updateWishlist(wishlist.get());
+            return updateWishlist(wishlist.get());
         } else {
             throw new IllegalArgumentException("Wishlist with id " + id + " does not exist.");
         }
@@ -80,12 +80,13 @@ public class WishlistService {
      * Removes all the products from the wishlist.
      *
      * @param id the id of the wishlist
+     * @return the updated wishlist
      */
-    public void clearWishlist(Long id) {
+    public Wishlist clearWishlist(Long id) {
         Optional<Wishlist> wishlist = findWishlistById(id);
         if (wishlist.isPresent()) {
             wishlist.get().clear();
-            updateWishlist(wishlist.get());
+            return updateWishlist(wishlist.get());
         } else {
             throw new IllegalArgumentException("Wishlist with id " + id + " does not exist.");
         }

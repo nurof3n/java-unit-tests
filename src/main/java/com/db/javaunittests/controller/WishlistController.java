@@ -25,7 +25,7 @@ public class WishlistController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Wishlist> getWishlist(@PathVariable Long id) {
+    public Optional<Wishlist> getWishlistById(@PathVariable Long id) {
         return wishlistService.findWishlistById(id);
     }
 

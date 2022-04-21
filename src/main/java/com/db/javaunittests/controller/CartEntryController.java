@@ -1,10 +1,8 @@
 package com.db.javaunittests.controller;
 
-import com.db.javaunittests.model.Cart;
 import com.db.javaunittests.model.CartEntry;
 import com.db.javaunittests.model.Product;
 import com.db.javaunittests.service.CartEntryService;
-import com.db.javaunittests.service.CartService;
 import com.db.javaunittests.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +42,7 @@ public class CartEntryController {
     }
 
     @GetMapping("/{id}")
-    public Optional<CartEntry> getCartEntry(@PathVariable Long id) {
+    public Optional<CartEntry> getCartEntryById(@PathVariable Long id) {
         return cartEntryService.findCartEntryById(id);
     }
 

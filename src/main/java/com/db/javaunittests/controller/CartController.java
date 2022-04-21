@@ -25,7 +25,7 @@ public class CartController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Cart> getCart(@PathVariable Long id) {
+    public Optional<Cart> getCartById(@PathVariable Long id) {
         return cartService.findCartById(id);
     }
 

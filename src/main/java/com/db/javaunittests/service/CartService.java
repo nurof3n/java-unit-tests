@@ -65,12 +65,13 @@ public class CartService {
      *
      * @param id        the id of the cart
      * @param cartEntry the entry to be removed
+     * @return the updated cart
      */
-    public void removeCartEntry(Long id, CartEntry cartEntry) {
+    public Cart removeCartEntry(Long id, CartEntry cartEntry) {
         Optional<Cart> cart = findCartById(id);
         if (cart.isPresent()) {
             cart.get().removeCartEntry(cartEntry);
-            updateCart(cart.get());
+            return updateCart(cart.get());
         } else {
             throw new IllegalArgumentException("Cart with id " + id + " not found");
         }
@@ -80,12 +81,13 @@ public class CartService {
      * Removes all entries from the cart.
      *
      * @param id the id of the cart
+     * @return the updated cart
      */
-    public void clearCart(Long id) {
+    public Cart clearCart(Long id) {
         Optional<Cart> cart = findCartById(id);
         if (cart.isPresent()) {
             cart.get().clear();
-            updateCart(cart.get());
+            return updateCart(cart.get());
         } else {
             throw new IllegalArgumentException("Cart with id " + id + " not found");
         }
