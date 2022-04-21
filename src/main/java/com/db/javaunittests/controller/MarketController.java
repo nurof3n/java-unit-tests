@@ -4,7 +4,6 @@ import com.db.javaunittests.model.Cart;
 import com.db.javaunittests.model.User;
 import com.db.javaunittests.service.CartService;
 import com.db.javaunittests.service.UserService;
-import com.db.javaunittests.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +19,6 @@ public class MarketController {
     private CartService cartService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private WishlistService wishlistService;
-
 
     /**
      * GET mapping that returns the list of all the carts in the database, sorted by total quantity.

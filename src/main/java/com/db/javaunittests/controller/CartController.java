@@ -17,9 +17,11 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    // basic CRUD operations
+
     @PostMapping("/create")
-    public void createCart(@RequestBody Cart cart) {
-        cartService.createCart(cart);
+    public void createCart() {
+        cartService.createCart(new Cart());
     }
 
     @GetMapping("/{id}")

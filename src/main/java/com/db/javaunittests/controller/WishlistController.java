@@ -17,6 +17,8 @@ public class WishlistController {
     @Autowired
     private WishlistService wishlistService;
 
+    // basic CRUD operations
+
     @PostMapping("/create")
     public void createWishlist(@RequestBody Wishlist wishlist) {
         wishlistService.createWishlist(wishlist);

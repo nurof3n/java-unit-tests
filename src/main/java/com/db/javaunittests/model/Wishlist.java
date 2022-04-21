@@ -9,9 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents a wishlist as a list of products that the user wants to buy.
+ */
 @Getter
 @Setter
 @Entity
@@ -22,14 +26,31 @@ public class Wishlist {
     private Long id;
 
     @OneToMany
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
+    /**
+     * Adds a product to the wishlist.
+     *
+     * @param product the product to add
+     */
     public void addProduct(Product product) {
         products.add(product);
     }
 
+    /**
+     * Removes a product from the wishlist.
+     *
+     * @param product the product to remove
+     */
     public void removeProduct(Product product) {
         products.remove(product);
+    }
+
+    /**
+     * Removes all the products from the wishlist.
+     */
+    public void clear() {
+        products.clear();
     }
 
     @Override

@@ -17,6 +17,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    // basic CRUD operations
+
     @PostMapping("/create")
     public void createProduct(@RequestBody Product product) {
         productService.createProduct(product);

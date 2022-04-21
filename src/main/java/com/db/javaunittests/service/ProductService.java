@@ -13,6 +13,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    // basic CRUD operations
+
     public void createProduct(Product product) {
         productRepository.save(product);
     }

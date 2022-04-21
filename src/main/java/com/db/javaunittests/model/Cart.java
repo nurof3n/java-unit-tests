@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,21 +21,56 @@ public class Cart {
     private Long id;
 
     @OneToMany
-    private List<Product> products;
+    private List<CartEntry> cartEntries = new ArrayList<>();
 
-    public void addProduct(Product product) {
-        this.products.add(product);
+    /**
+     * Adds an entry to the cart.
+     *
+     * @param cartEntry the entry to add
+     */
+    public void addCartEntry(CartEntry cartEntry) {
+        cartEntries.add(cartEntry);
     }
 
-    public void removeProduct(Product product) {
-        this.products.remove(product);
+    /**
+     * Removes an entry from the cart.
+     *
+     * @param cartEntry the entry to remove
+     */
+    public void removeCartEntry(CartEntry cartEntry) {
+        cartEntries.remove(cartEntry);
+    }
+
+    /**
+     * Removes all the entries from the cart.
+     */
+    public void clear() {
+        cartEntries.clear();
+    }
+
+    /**
+     * @return true if the checkout is valid, i.e., the number of products ordered is at most equal to the product stock
+     * for each cart entry
+     */
+    public boolean validateCheckout() {
+        return cartEntries.stream().allMatch(CartEntry::validateCheckout);
+    }
+
+    /**
+     * Checks out each cart entry. This also validates that the checkout is valid, i.e., the number of products ordered
+     * is at most equal to the product stock.
+     */
+    public void checkout() {
+        if (validateCheckout()) {
+            cartEntries.forEach(CartEntry::checkout);
+        }
     }
 
     /**
      * @return the total quantity of all products in the cart
      */
     public Integer getTotalQuantity() {
-        return products.stream().mapToInt(Product::getQuantity).sum();
+        return cartEntries.stream().mapToInt(CartEntry::getQuantity).sum();
     }
 
     @Override

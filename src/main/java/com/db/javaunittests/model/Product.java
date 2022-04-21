@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -25,7 +26,7 @@ public class Product {
     private Double price;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer stock;
 
     @Override
     public boolean equals(Object o) {
