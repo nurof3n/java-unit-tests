@@ -196,4 +196,16 @@ public class UserService {
         users.sort(Comparator.comparingInt(u -> u.getOrderHistory().size()));
         return users;
     }
+
+    /**
+     * Returns the order history of the user with given id.
+     * If the user does not exist, returns null
+     *
+     * @param id user id
+     * @return order history of the user
+     */
+    public List<Cart> getOrderHistory(Long id) {
+        Optional<User> user = findUserById(id);
+        return user.map(User::getOrderHistory).orElse(null);
+    }
 }

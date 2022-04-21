@@ -179,4 +179,15 @@ public class UserController {
     public void clearWishlist(@PathVariable Long id) {
         userService.clearWishlist(id);
     }
+
+    /**
+     * Returns the order history of the user with the given id.
+     *
+     * @param id the id of the user
+     * @return the order history of the user with the given id
+     */
+    @GetMapping("/{id}/orderHistory")
+    public List<Cart> getOrderHistory(@PathVariable Long id) {
+        return userService.getOrderHistory(id);
+    }
 }
