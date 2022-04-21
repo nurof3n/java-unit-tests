@@ -20,8 +20,8 @@ public class ProductController {
     // basic CRUD operations
 
     @PostMapping("/create")
-    public void createProduct(@RequestBody Product product) {
-        productService.createProduct(product);
+    public Product createProduct(@RequestBody Product product) {
+        return productService.createProduct(product);
     }
 
     @GetMapping("/{id}")
@@ -35,8 +35,8 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public void updateProduct(@RequestBody Product product) {
-        productService.updateProduct(product);
+    public Product updateProduct(@RequestBody Product product) {
+        return productService.updateProduct(product);
     }
 
     @DeleteMapping("/delete/{id}")

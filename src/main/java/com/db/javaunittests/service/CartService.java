@@ -17,8 +17,8 @@ public class CartService {
 
     // basic CRUD operations
 
-    public void createCart(Cart cart) {
-        cartRepository.save(cart);
+    public Cart createCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 
     public Optional<Cart> findCartById(Long id) {
@@ -29,8 +29,8 @@ public class CartService {
         return cartRepository.findAll();
     }
 
-    public void updateCart(Cart cart) {
-        cartRepository.save(cart);
+    public Cart updateCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 
     public void deleteCartById(Long id) {
@@ -48,12 +48,15 @@ public class CartService {
      *
      * @param id        the id of the cart
      * @param cartEntry the entry to be added
+     * @return the updated cart
      */
-    public void addCartEntry(Long id, CartEntry cartEntry) {
+    public Cart addCartEntry(Long id, CartEntry cartEntry) {
         Optional<Cart> cart = findCartById(id);
         if (cart.isPresent()) {
             cart.get().addCartEntry(cartEntry);
-            updateCart(cart.get());
+            return updateCart(cart.get());
+        } else {
+            throw new IllegalArgumentException("Cart with id " + id + " not found");
         }
     }
 
@@ -68,6 +71,8 @@ public class CartService {
         if (cart.isPresent()) {
             cart.get().removeCartEntry(cartEntry);
             updateCart(cart.get());
+        } else {
+            throw new IllegalArgumentException("Cart with id " + id + " not found");
         }
     }
 
@@ -81,15 +86,17 @@ public class CartService {
         if (cart.isPresent()) {
             cart.get().clear();
             updateCart(cart.get());
+        } else {
+            throw new IllegalArgumentException("Cart with id " + id + " not found");
         }
     }
 
     /**
-     * @return a list of all the carts ordered by the total quantity of products in the cart
+     * @return a list of all the carts decreasingly ordered by the total quantity of products in the cart
      */
     public List<Cart> getCartsSortedByQuantity() {
         List<Cart> carts = findAllCarts();
-        carts.sort(Comparator.comparingInt(Cart::getTotalQuantity));
+        carts.sort(Comparator.comparingInt(Cart::getTotalQuantity).reversed());
         return carts;
     }
 }

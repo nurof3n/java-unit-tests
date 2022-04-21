@@ -20,8 +20,8 @@ public class CartController {
     // basic CRUD operations
 
     @PostMapping("/create")
-    public void createCart() {
-        cartService.createCart(new Cart());
+    public Cart createCart() {
+        return cartService.createCart(new Cart());
     }
 
     @GetMapping("/{id}")
@@ -35,8 +35,8 @@ public class CartController {
     }
 
     @PostMapping("/update")
-    public void updateCart(@RequestBody Cart cart) {
-        cartService.updateCart(cart);
+    public Cart updateCart(@RequestBody Cart cart) {
+        return cartService.updateCart(cart);
     }
 
     @DeleteMapping("/delete/{id}")

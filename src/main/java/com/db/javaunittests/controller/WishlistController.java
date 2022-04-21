@@ -20,8 +20,8 @@ public class WishlistController {
     // basic CRUD operations
 
     @PostMapping("/create")
-    public void createWishlist(@RequestBody Wishlist wishlist) {
-        wishlistService.createWishlist(wishlist);
+    public Wishlist createWishlist(@RequestBody Wishlist wishlist) {
+        return wishlistService.createWishlist(wishlist);
     }
 
     @GetMapping("/{id}")
@@ -35,8 +35,8 @@ public class WishlistController {
     }
 
     @PostMapping("/update")
-    public void updateWishlist(@RequestBody Wishlist wishlist) {
-        wishlistService.updateWishlist(wishlist);
+    public Wishlist updateWishlist(@RequestBody Wishlist wishlist) {
+        return wishlistService.updateWishlist(wishlist);
     }
 
     @DeleteMapping("/delete/{id}")

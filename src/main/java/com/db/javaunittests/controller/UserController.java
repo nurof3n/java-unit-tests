@@ -28,8 +28,8 @@ public class UserController {
     // basic CRUD operations
 
     @PostMapping("/create")
-    public void createUser(@RequestBody User user) {
-        userService.createUser(user);
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
     @GetMapping("/{id}")
@@ -43,8 +43,8 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public void updateUser(@RequestBody User user) {
-        userService.updateUser(user);
+    public User updateUser(@RequestBody User user) {
+        return userService.updateUser(user);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -76,11 +76,12 @@ public class UserController {
      *
      * @param id          the id of the user
      * @param cartEntryId the id of the entry to add to the cart
+     * @return user with the updated cart
      */
     @PostMapping("/{id}/cart/add")
-    public void addToCart(@PathVariable Long id, @RequestParam Long cartEntryId) {
+    public User addToCart(@PathVariable Long id, @RequestParam Long cartEntryId) {
         if (getUserById(id).isEmpty()) {
-            return;
+            throw new IllegalArgumentException("User with id " + id + " does not exist.");
         }
 
         if (getCart(id) == null) {
@@ -90,7 +91,8 @@ public class UserController {
         }
 
         Optional<CartEntry> cartEntry = cartEntryService.findCartEntryById(cartEntryId);
-        cartEntry.ifPresent(entry -> userService.addToCart(id, entry));
+        return cartEntry.map(entry -> userService.addToCart(id, entry)).orElseThrow(
+                () -> new IllegalArgumentException("Cart entry with id " + cartEntryId + " does not exist."));
     }
 
     /**
@@ -145,9 +147,14 @@ public class UserController {
      *
      * @param id        the id of the user
      * @param productId the id of the product to add to the wishlist
+     * @return user with the updated wishlist
      */
     @PostMapping("/{id}/wishlist/add")
-    public void addToWishlist(@PathVariable Long id, @RequestParam Long productId) {
+    public User addToWishlist(@PathVariable Long id, @RequestParam Long productId) {
+        if (getUserById(id).isEmpty()) {
+            throw new IllegalArgumentException("User with id " + id + " does not exist.");
+        }
+
         if (getWishlist(id) == null) {
             Wishlist wishlist = new Wishlist();
             wishlistService.createWishlist(wishlist);
@@ -155,7 +162,8 @@ public class UserController {
         }
 
         Optional<Product> product = productService.findProductById(productId);
-        product.ifPresent(p -> userService.addToWishlist(id, p));
+        return product.map(p -> userService.addToWishlist(id, p))
+                .orElseThrow(() -> new IllegalArgumentException("Product with id " + productId + " does not exist."));
     }
 
     /**

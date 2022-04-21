@@ -21,12 +21,13 @@ public class CartEntryService {
      *
      * @param quantity the quantity of the product
      * @param product  the product
+     * @return the created cart entry
      */
-    public void createCartEntry(Integer quantity, Product product) {
+    public CartEntry createCartEntry(Integer quantity, Product product) {
         CartEntry cartEntry = new CartEntry();
         cartEntry.setQuantity(quantity);
         cartEntry.setProduct(product);
-        cartEntryRepository.save(cartEntry);
+        return cartEntryRepository.save(cartEntry);
     }
 
     public Optional<CartEntry> findCartEntryById(Long id) {
@@ -37,8 +38,8 @@ public class CartEntryService {
         return cartEntryRepository.findAll();
     }
 
-    public void updateCartEntry(CartEntry cartEntry) {
-        cartEntryRepository.save(cartEntry);
+    public CartEntry updateCartEntry(CartEntry cartEntry) {
+        return cartEntryRepository.save(cartEntry);
     }
 
     public void deleteCartEntryById(Long id) {

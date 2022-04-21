@@ -2,7 +2,7 @@
 
 ### What is this?
 
-This is the repository for the homework on java unit testing from the Java Spring Advanced course.
+This is the repository for my homework on java unit testing from the Java Spring Advanced course.
 
 ### Homework requirements
 

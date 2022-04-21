@@ -15,8 +15,8 @@ public class ProductService {
 
     // basic CRUD operations
 
-    public void createProduct(Product product) {
-        productRepository.save(product);
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
     }
 
     public Optional<Product> findProductById(Long id) {
@@ -27,8 +27,8 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public void updateProduct(Product product) {
-        productRepository.save(product);
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
     }
 
     public void deleteProductById(Long id) {

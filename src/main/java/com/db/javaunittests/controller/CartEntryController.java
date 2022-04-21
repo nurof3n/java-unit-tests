@@ -31,11 +31,16 @@ public class CartEntryController {
      *
      * @param quantity  quantity of product to add to cart
      * @param productId id of product
+     * @return CartEntry
      */
     @PostMapping("/create")
-    public void createCartEntry(@RequestParam Integer quantity, @RequestParam Long productId) {
+    public CartEntry createCartEntry(@RequestParam Integer quantity, @RequestParam Long productId) {
         Optional<Product> product = productService.findProductById(productId);
-        product.ifPresent(value -> cartEntryService.createCartEntry(quantity, value));
+        if (product.isPresent()) {
+            return cartEntryService.createCartEntry(quantity, product.get());
+        } else {
+            throw new IllegalArgumentException("Product with id " + productId + " does not exist");
+        }
     }
 
     @GetMapping("/{id}")
@@ -49,8 +54,8 @@ public class CartEntryController {
     }
 
     @PostMapping("/update")
-    public void updateCartEntry(@RequestBody CartEntry cartEntry) {
-        cartEntryService.updateCartEntry(cartEntry);
+    public CartEntry updateCartEntry(@RequestBody CartEntry cartEntry) {
+        return cartEntryService.updateCartEntry(cartEntry);
     }
 
     @DeleteMapping("/delete/{id}")
