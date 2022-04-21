@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -32,6 +33,9 @@ public class User {
 
     @OneToOne
     private Wishlist wishlist;
+
+    @Transient
+    private List<Cart> orderHistory;
 
     public void addToCart(Product product) {
         cart.addProduct(product);

@@ -1,11 +1,34 @@
 package com.db.javaunittests.service;
 
+import com.db.javaunittests.model.Wishlist;
 import com.db.javaunittests.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class WishlistService {
     @Autowired
     private WishlistRepository wishlistRepository;
+
+    public void createWishlist(Wishlist wishlist) {
+        wishlistRepository.save(wishlist);
+    }
+
+    public Optional<Wishlist> findWishlistById(Long id) {
+        return wishlistRepository.findById(id);
+    }
+
+    public Iterable<Wishlist> findAllWishlists() {
+        return wishlistRepository.findAll();
+    }
+
+    public void updateWishlist(Wishlist wishlist) {
+        wishlistRepository.save(wishlist);
+    }
+
+    public void deleteWishlistById(Long id) {
+        wishlistRepository.deleteById(id);
+    }
 }
