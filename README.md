@@ -6,6 +6,8 @@ This is the repository for my homework on java unit testing from the Java Spring
 authentication on the two extra endpoints from the `MarketController`:
 `/carts/sorted_by_total_quantity` and `/users/sorted_by_number_of_orders`.
 
+I've used OpenApi with Swagger UI, because SpringFox 3.0.0 does not work for me.
+
 ## Homework requirements
 
 ### Part 1
@@ -29,23 +31,4 @@ Please make sure to have the extra endpoints:
 * Implement JWT auth for two endpoints from the previous homework
 * Write what endpoints have JWT enabled in `README.md`
 * Allow swagger to be reached without auth (SecurityConfiguration)
-
-## Reference Documentation
-
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.6.6/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.6.6/maven-plugin/reference/html/#build-image)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#boot-features-developing-web-applications)
-
-## Guides
-
-The following guides illustrate how to use some features concretely:
-
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
 
