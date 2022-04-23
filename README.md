@@ -1,25 +1,36 @@
 # Getting Started
 
-### What is this?
+## What is this?
 
-This is the repository for my homework on java unit testing from the Java Spring Advanced course.
+This is the repository for my homework on java unit testing from the Java Spring Advanced course. I've implemented JWT
+authentication on the two extra endpoints from the `MarketController`:
+`/carts/sorted_by_total_quantity` and `/users/sorted_by_number_of_orders`.
 
-### Homework requirements
+## Homework requirements
 
-* Create a Spring Boot project and design (code) an API for a Market (users have a cart, and add and remove products, 
-  each user has an id, and also a Wishlist, no need to implement a login system; create all CRUD operations for Users, Cart and Wishlist, use H2 (in-memory) as a database)
+### Part 1
+
+* Create a Spring Boot project and design (code) an API for a Market (users have a cart, and add and remove products,
+  each user has an id, and also a Wishlist, no need to implement a login system; create all CRUD operations for Users,
+  Cart and Wishlist, use H2 (in-memory) as a database)
 * Create unit tests for it
 * Please make sure to implement all those things, and meet the deadline
-* Comments would be a nice addition 
+* Comments would be a nice addition
 
 Please make sure to have the extra endpoints:
 
-* An endpoint where i can get all the carts from all the users, sorted by the total of the products (a product must 
-have a name, price and a quantity)
-* An endpoint where i can get all the users sorted by their number of orders (users will also have order history, 
-  make sure to implement it)
+* An endpoint where I can get all the carts from all the users, sorted by the total of the products (a product must have
+  a name, price and a quantity)
+* An endpoint where I can get all the users sorted by their number of orders (users will also have order history, make
+  sure to implement it)
 
-### Reference Documentation
+### Part 2
+
+* Implement JWT auth for two endpoints from the previous homework
+* Write what endpoints have JWT enabled in `README.md`
+* Allow swagger to be reached without auth (SecurityConfiguration)
+
+## Reference Documentation
 
 For further reference, please consider the following sections:
 
@@ -29,7 +40,7 @@ For further reference, please consider the following sections:
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#boot-features-jpa-and-spring-data)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#boot-features-developing-web-applications)
 
-### Guides
+## Guides
 
 The following guides illustrate how to use some features concretely:
 
