@@ -1,12 +1,11 @@
 package com.db.javaunittests.model;
 
+import com.db.javaunittests.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -30,18 +29,24 @@ public class CartEntry {
     @ManyToOne
     private Product product;
 
+    @ManyToOne
+    private Cart cart;
+
     /**
      * @return true if the quantity ordered is at most equal to the product's stock
      */
     public boolean validateCheckout() {
-        return quantity < product.getStock();
+        return quantity <= product.getStock();
     }
 
     /**
      * Checks out the order, i.e., reduces the stock of the product by the quantity ordered.
+     *
+     * @param productService the product service used to update the product's stock
      */
-    public void checkout() {
+    public void checkout(ProductService productService) {
         product.setStock(product.getStock() - quantity);
+        product = productService.updateProduct(product);
     }
 
     @Override

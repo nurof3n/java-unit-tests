@@ -1,11 +1,10 @@
 package com.db.javaunittests.model;
 
+import com.db.javaunittests.service.ProductService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,8 +21,13 @@ public class Cart {
     @GeneratedValue
     private Long id;
 
-    @OneToMany
+    private boolean checkedOut;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartEntry> cartEntries = new ArrayList<>();
+
+    @ManyToOne
+    private User user;
 
     /**
      * Adds an entry to the cart.
@@ -32,6 +36,7 @@ public class Cart {
      */
     public void addCartEntry(CartEntry cartEntry) {
         cartEntries.add(cartEntry);
+        cartEntry.setCart(this);
     }
 
     /**
@@ -41,12 +46,14 @@ public class Cart {
      */
     public void removeCartEntry(CartEntry cartEntry) {
         cartEntries.remove(cartEntry);
+        cartEntry.setCart(null);
     }
 
     /**
      * Removes all the entries from the cart.
      */
     public void clear() {
+        cartEntries.forEach(cartEntry -> cartEntry.setCart(null));
         cartEntries.clear();
     }
 
@@ -61,10 +68,12 @@ public class Cart {
     /**
      * Checks out each cart entry. This also validates that the checkout is valid, i.e., the number of products ordered
      * is at most equal to the product stock.
+     *
+     * @param productService the product service used to update the products' stocks
      */
-    public void checkout() {
+    public void checkout(ProductService productService) {
         if (validateCheckout()) {
-            cartEntries.forEach(CartEntry::checkout);
+            cartEntries.forEach(cartEntry -> cartEntry.checkout(productService));
         }
     }
 

@@ -1,7 +1,6 @@
 package com.db.javaunittests.service;
 
 import com.db.javaunittests.model.Cart;
-import com.db.javaunittests.model.CartEntry;
 import com.db.javaunittests.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,56 +41,6 @@ public class CartService {
     }
 
     // custom operations
-
-    /**
-     * Adds an entry to the cart (product and quantity).
-     *
-     * @param id        the id of the cart
-     * @param cartEntry the entry to be added
-     * @return the updated cart
-     */
-    public Cart addCartEntry(Long id, CartEntry cartEntry) {
-        Optional<Cart> cart = findCartById(id);
-        if (cart.isPresent()) {
-            cart.get().addCartEntry(cartEntry);
-            return updateCart(cart.get());
-        } else {
-            throw new IllegalArgumentException("Cart with id " + id + " not found");
-        }
-    }
-
-    /**
-     * Removes an entry from the cart.
-     *
-     * @param id        the id of the cart
-     * @param cartEntry the entry to be removed
-     * @return the updated cart
-     */
-    public Cart removeCartEntry(Long id, CartEntry cartEntry) {
-        Optional<Cart> cart = findCartById(id);
-        if (cart.isPresent()) {
-            cart.get().removeCartEntry(cartEntry);
-            return updateCart(cart.get());
-        } else {
-            throw new IllegalArgumentException("Cart with id " + id + " not found");
-        }
-    }
-
-    /**
-     * Removes all entries from the cart.
-     *
-     * @param id the id of the cart
-     * @return the updated cart
-     */
-    public Cart clearCart(Long id) {
-        Optional<Cart> cart = findCartById(id);
-        if (cart.isPresent()) {
-            cart.get().clear();
-            return updateCart(cart.get());
-        } else {
-            throw new IllegalArgumentException("Cart with id " + id + " not found");
-        }
-    }
 
     /**
      * @return a list of all the carts decreasingly ordered by the total quantity of products in the cart

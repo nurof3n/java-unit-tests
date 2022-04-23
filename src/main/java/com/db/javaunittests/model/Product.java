@@ -28,6 +28,29 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartEntry> cartEntries;
+
+    /**
+     * Adds a new cart entry to the list of cart entries where the product appears.
+     *
+     * @param cartEntry the cart where the product appears
+     */
+    public void addCartEntry(CartEntry cartEntry) {
+        cartEntries.add(cartEntry);
+        cartEntry.setProduct(this);
+    }
+
+    /**
+     * Removes a cart entry from the list of cart entries where the product appears.
+     *
+     * @param cartEntry the cart where the product appears
+     */
+    public void removeCartEntry(CartEntry cartEntry) {
+        cartEntries.remove(cartEntry);
+        cartEntry.setProduct(null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

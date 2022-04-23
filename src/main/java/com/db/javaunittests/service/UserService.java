@@ -17,6 +17,8 @@ public class UserService {
     private CartService cartService;
     @Autowired
     private WishlistService wishlistService;
+    @Autowired
+    private ProductService productService;
 
     // basic CRUD operations
 
@@ -56,7 +58,7 @@ public class UserService {
     public User assignCart(Long id, Cart cart) {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
-            user.get().setCurrentCart(cart);
+            user.get().assignCart(cart);
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
@@ -74,7 +76,7 @@ public class UserService {
         if (user.isEmpty()) {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
         }
-        return user.get().getCurrentCart();
+        return user.get().getUncheckedOutCart();
     }
 
     /**
@@ -85,11 +87,17 @@ public class UserService {
      * @return the user with the cart entry added
      */
     public User addToCart(Long id, CartEntry cartEntry) {
-        Optional<User> user = findUserById(id);
-        if (user.isPresent()) {
-            user.get().addToCart(cartEntry);
-            user.get().setCurrentCart(cartService.updateCart(user.get().getCurrentCart()));
-            return updateUser(user.get());
+        Optional<User> userOptional = findUserById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (getCart(id) == null) {
+                Cart cart = new Cart();
+                cart = cartService.createCart(cart);
+                user = assignCart(id, cart);
+            }
+
+            user.addToCart(cartEntry);
+            return updateUser(user);
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
         }
@@ -106,7 +114,6 @@ public class UserService {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
             user.get().removeFromCart(cartEntry);
-            user.get().setCurrentCart(cartService.updateCart(user.get().getCurrentCart()));
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
@@ -119,10 +126,10 @@ public class UserService {
      * @param id user id
      * @return updated user
      */
-    public User clearCart(Long id) {
+    public User removeCart(Long id) {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
-            user.get().clearCart();
+            user.get().removeCurrentCart();
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
@@ -132,6 +139,7 @@ public class UserService {
     /**
      * Performs the checkout with the entries in the cart.
      * Adds the order to the history of the user.
+     * Updates the products' stocks.
      *
      * @param id user id
      * @return updated user
@@ -139,7 +147,7 @@ public class UserService {
     public User checkout(Long id) {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
-            user.get().checkout();
+            user.get().checkout(productService);
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("Checkout failed.");
@@ -156,7 +164,7 @@ public class UserService {
     public User assignWishlist(Long id, Wishlist wishlist) {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
-            user.get().setWishlist(wishlist);
+            user.get().assignWishlist(wishlist);
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
@@ -185,11 +193,17 @@ public class UserService {
      * @return the user with the product added to the wishlist
      */
     public User addToWishlist(Long id, Product product) {
-        Optional<User> user = findUserById(id);
-        if (user.isPresent()) {
-            user.get().addToWishlist(product);
-            user.get().setWishlist(wishlistService.updateWishlist(user.get().getWishlist()));
-            return updateUser(user.get());
+        Optional<User> userOptional = findUserById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (getWishlist(id) == null) {
+                Wishlist wishlist = new Wishlist();
+                wishlist = wishlistService.createWishlist(wishlist);
+                user = assignWishlist(id, wishlist);
+            }
+
+            user.addToWishlist(product);
+            return updateUser(user);
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
         }
@@ -206,7 +220,6 @@ public class UserService {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
             user.get().removeFromWishlist(product);
-            user.get().setWishlist(wishlistService.updateWishlist(user.get().getWishlist()));
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
@@ -219,10 +232,10 @@ public class UserService {
      * @param id user id
      * @return updated user
      */
-    public User clearWishlist(Long id) {
+    public User removeWishlist(Long id) {
         Optional<User> user = findUserById(id);
         if (user.isPresent()) {
-            user.get().clearWishlist();
+            user.get().removeWishlist();
             return updateUser(user.get());
         } else {
             throw new IllegalArgumentException("User with id " + id + " does not exist");

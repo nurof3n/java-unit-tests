@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,6 +24,9 @@ public class Wishlist {
 
     @OneToMany
     private List<Product> products = new ArrayList<>();
+
+    @OneToOne
+    private User user;
 
     /**
      * Adds a product to the wishlist.

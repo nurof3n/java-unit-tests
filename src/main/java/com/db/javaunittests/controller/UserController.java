@@ -17,10 +17,6 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private CartService cartService;
-    @Autowired
-    private WishlistService wishlistService;
-    @Autowired
     private CartEntryService cartEntryService;
     @Autowired
     private ProductService productService;
@@ -84,12 +80,6 @@ public class UserController {
             throw new IllegalArgumentException("User with id " + id + " does not exist.");
         }
 
-        if (getCart(id) == null) {
-            Cart cart = new Cart();
-            cartService.createCart(cart);
-            userService.assignCart(id, cart);
-        }
-
         Optional<CartEntry> cartEntry = cartEntryService.findCartEntryById(cartEntryId);
         return cartEntry.map(entry -> userService.addToCart(id, entry)).orElseThrow(
                 () -> new IllegalArgumentException("Cart entry with id " + cartEntryId + " does not exist."));
@@ -117,7 +107,7 @@ public class UserController {
      */
     @PostMapping("/{id}/cart/clear")
     public User clearCart(@PathVariable Long id) {
-        return userService.clearCart(id);
+        return userService.removeCart(id);
     }
 
     /**
@@ -159,22 +149,12 @@ public class UserController {
             throw new IllegalArgumentException("User with id " + id + " does not exist.");
         }
 
-        if (getWishlist(id) == null) {
-            Wishlist wishlist = new Wishlist();
-            wishlist = wishlistService.createWishlist(wishlist);
-            userService.assignWishlist(id, wishlist);
-        }
-
         Optional<Product> product = productService.findProductById(productId);
         if (product.isEmpty()) {
             throw new IllegalArgumentException("Product with id " + productId + " does not exist.");
         } else {
-            User user = userService.addToWishlist(id, product.get());
-            System.out.println(user.getWishlist().getProducts().size());
-            return user;
+            return userService.addToWishlist(id, product.get());
         }
-//        return product.map(p -> userService.addToWishlist(id, p))
-//                .orElseThrow(() -> new IllegalArgumentException("Product with id " + productId + " does not exist."));
     }
 
     /**
@@ -199,7 +179,7 @@ public class UserController {
      */
     @PostMapping("/{id}/wishlist/clear")
     public User clearWishlist(@PathVariable Long id) {
-        return userService.clearWishlist(id);
+        return userService.removeWishlist(id);
     }
 
     /**

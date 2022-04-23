@@ -25,6 +25,10 @@ class JavaUnitTestsApplicationTests {
     private MarketController marketController;
     @Autowired
     private ProductController productController;
+    @Autowired
+    private CartController cartController;
+    @Autowired
+    private WishlistController wishlistController;
 
     private User user;
     private Product product;
@@ -58,7 +62,7 @@ class JavaUnitTestsApplicationTests {
         assert userFound.get().getPassword().equals(user.getPassword());
         assert Objects.equals(userFound.get().getId(), user.getId());
         assert userFound.get().getWishlist() == null;
-        assert userFound.get().getCurrentCart() == null;
+        assert userFound.get().getUncheckedOutCart() == null;
     }
 
     @Test
@@ -85,7 +89,6 @@ class JavaUnitTestsApplicationTests {
     @Test
     @Order(4)
     void whenAddToWishlist_ThenSaveCorrect() {
-        System.out.println("Am inceput aici " + product.getId());
         user = userController.addToWishlist(user.getId(), product.getId());
         assert user.getWishlist() != null;
         assert user.getWishlist().getProducts().contains(product);
@@ -96,9 +99,10 @@ class JavaUnitTestsApplicationTests {
     @Order(5)
     void whenAddToCart_ThenSaveCorrect() {
         user = userController.addToCart(user.getId(), cartEntry.getId());
-        assert user.getCurrentCart() != null;
-        assert user.getCurrentCart().getCartEntries().contains(cartEntry);
-        assert user.getCurrentCart().getCartEntries().size() == 1;
+        assert user.getUncheckedOutCart() != null;
+        assert user.getOrderHistory().size() == 1;
+        assert user.getUncheckedOutCart().getCartEntries().contains(cartEntry);
+        assert user.getUncheckedOutCart().getCartEntries().size() == 1;
     }
 
     @Test
@@ -111,10 +115,11 @@ class JavaUnitTestsApplicationTests {
 
     @Test
     @Order(7)
-    void whenCheckout_ThenCartIsEmptyAndOrderHistoryIsNotEmpty() {
+    void whenCheckout_ThenCartIsEmptyAndOrderHistoryIsNotEmptyAndProductStockUpdated() {
         user = userController.checkout(user.getId());
-        assert user.getCurrentCart() == null;
+        assert user.getUncheckedOutCart() == null;
         assert user.getOrderHistory().size() == 1;
+        assert productController.getProductById(product.getId()).get().getStock() == 0;
     }
 
     @Test
@@ -124,7 +129,7 @@ class JavaUnitTestsApplicationTests {
         cartEntry = cartEntryController.createCartEntry(1, product.getId());
         user = userController.addToCart(user.getId(), cartEntry.getId());
         user = userController.removeFromCart(user.getId(), cartEntry.getId());
-        assert user.getCurrentCart().getCartEntries().size() == 0;
+        assert user.getUncheckedOutCart().getCartEntries().size() == 0;
     }
 
     @Test
@@ -146,5 +151,17 @@ class JavaUnitTestsApplicationTests {
         List<Cart> carts = marketController.getCartsSortedByQuantity();
         assert carts.size() == 2;
         assert carts.get(0).getTotalQuantity() >= carts.get(1).getTotalQuantity();
+    }
+
+    @Test
+    @Order(11)
+    void givenDatabase_WhenDeleteTables_ThenTablesAreEmpty() {
+        userController.deleteAllUsers();
+        productController.deleteAllProducts();
+        assert userController.getAllUsers().size() == 0;
+        assert productController.getAllProducts().size() == 0;
+        assert cartEntryController.getAllCartEntries().size() == 0;
+        assert cartController.getAllCarts().size() == 0;
+        assert wishlistController.getAllWishlists().size() == 0;
     }
 }

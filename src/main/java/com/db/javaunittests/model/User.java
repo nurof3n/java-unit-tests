@@ -1,5 +1,6 @@
 package com.db.javaunittests.model;
 
+import com.db.javaunittests.service.ProductService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,14 +30,45 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne
-    private Cart currentCart;
-
-    @OneToOne
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Wishlist wishlist;
 
-    @OneToMany
+    /**
+     * The order history contains all the carts that the users has purchased and, eventually, the last element is the
+     * current cart (not yet checked out).
+     */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> orderHistory = new ArrayList<>();
+
+    /**
+     * Gets the last element of the order history, if it exists, and it is an unchecked out cart.
+     *
+     * @return the element, or null if it does not exist, or it is not an unchecked out cart
+     */
+    public Cart getUncheckedOutCart() {
+        if (orderHistory.isEmpty() || orderHistory.get(orderHistory.size() - 1).isCheckedOut()) {
+            return null;
+        }
+
+        return orderHistory.get(orderHistory.size() - 1);
+    }
+
+    /**
+     * Assigns a current cart to the user as the last element in the order history.
+     *
+     * @param cart the cart to assign
+     */
+    public void assignCart(Cart cart) {
+        Cart uncheckedOutCart = getUncheckedOutCart();
+        if (uncheckedOutCart == null) {
+            orderHistory.add(cart);
+        } else {
+            orderHistory.set(orderHistory.size() - 1, cart);
+        }
+
+        cart.setCheckedOut(false);  // just to make sure
+        cart.setUser(this);
+    }
 
     /**
      * Adds the given entry to the current cart.
@@ -44,6 +76,11 @@ public class User {
      * @param cartEntry the entry to add
      */
     public void addToCart(CartEntry cartEntry) {
+        Cart currentCart = getUncheckedOutCart();
+        if (currentCart == null) {
+            throw new IllegalStateException("No unchecked out cart found");
+        }
+
         currentCart.addCartEntry(cartEntry);
     }
 
@@ -53,25 +90,51 @@ public class User {
      * @param cartEntry the entry to remove
      */
     public void removeFromCart(CartEntry cartEntry) {
+        Cart currentCart = getUncheckedOutCart();
+        if (currentCart == null) {
+            throw new IllegalStateException("No unchecked out cart found");
+        }
+
         currentCart.removeCartEntry(cartEntry);
     }
 
     /**
-     * Sets the current cart to null.
+     * Removes the user's cart.
      */
-    public void clearCart() {
-        currentCart = null;
+    public void removeCurrentCart() {
+        Cart currentCart = getUncheckedOutCart();
+        if (currentCart != null) {
+            currentCart.setUser(null);
+            orderHistory.remove(orderHistory.size() - 1);
+        }
     }
 
     /**
      * Checks out the current cart and adds it to the order history.
      * This performs a validation that checks if the number of products ordered for each entry is at most equal to
      * the stock of the product.
+     *
+     * @param productService the product service used to update the products' stocks
      */
-    public void checkout() {
-        currentCart.checkout();
-        orderHistory.add(currentCart);
-        clearCart();
+    public void checkout(ProductService productService) {
+        Cart currentCart = getUncheckedOutCart();
+        if (currentCart == null) {
+            throw new IllegalStateException("No unchecked out cart found");
+        }
+
+        currentCart.checkout(productService);
+        currentCart.setCheckedOut(true);
+        removeCurrentCart();
+    }
+
+    /**
+     * Assigns a wishlist to the user
+     *
+     * @param wishlist the wishlist to assign
+     */
+    public void assignWishlist(Wishlist wishlist) {
+        this.wishlist = wishlist;
+        this.wishlist.setUser(this);
     }
 
     /**
@@ -93,10 +156,13 @@ public class User {
     }
 
     /**
-     * Sets the wishlist to null.
+     * Removes the user's wishlist.
      */
-    public void clearWishlist() {
-        wishlist = null;
+    public void removeWishlist() {
+        if (wishlist != null) {
+            wishlist.setUser(null);
+            wishlist = null;
+        }
     }
 
     @Override

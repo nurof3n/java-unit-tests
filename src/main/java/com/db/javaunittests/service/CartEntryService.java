@@ -26,7 +26,7 @@ public class CartEntryService {
     public CartEntry createCartEntry(Integer quantity, Product product) {
         CartEntry cartEntry = new CartEntry();
         cartEntry.setQuantity(quantity);
-        cartEntry.setProduct(product);
+        product.addCartEntry(cartEntry);
         return cartEntryRepository.save(cartEntry);
     }
 
