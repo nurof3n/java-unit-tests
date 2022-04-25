@@ -8,6 +8,8 @@ authentication on the two extra endpoints from the `MarketController`:
 
 I've used OpenApi with Swagger UI, because SpringFox 3.0.0 does not work for me.
 
+Props to xrusu! :D
+
 ## Homework requirements
 
 ### Part 1
