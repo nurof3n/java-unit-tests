@@ -33,7 +33,7 @@ public class MarketController {
     private UserService userService;
     @Autowired
     private JWTService jwtService;
-
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -81,6 +81,7 @@ public class MarketController {
 
         // create and persist the user
         User user = new User();
+        user.setName(authenticationRequest.getName());
         user.setEmail(authenticationRequest.getEmail());
         user.setEmail(authenticationRequest.getEmail());
         // encrypt the password

@@ -1,5 +1,6 @@
 package com.db.javaunittests;
 
+import com.db.javaunittests.authentication.AuthenticationRequest;
 import com.db.javaunittests.controller.*;
 import com.db.javaunittests.model.Cart;
 import com.db.javaunittests.model.CartEntry;
@@ -36,10 +37,7 @@ class JavaUnitTestsApplicationTests {
 
     @BeforeAll
     void populateDatabase() {
-        user = new User();
-        user.setName("nurof3n");
-        user.setEmail("andy.cioc@yahoo.ro");
-        user.setPassword("123456");
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest("Gogu", "gogu@yahoo.ro", "gogu67");
         product = new Product();
         product.setName("mamaliga");
         product.setPrice(10.0);
@@ -47,7 +45,7 @@ class JavaUnitTestsApplicationTests {
         cartEntry = new CartEntry();
         cartEntry.setQuantity(2);
         cartEntry.setProduct(product);
-        user = userController.createUser(user);
+        user = marketController.registerUser(authenticationRequest);
         product = productController.createProduct(product);
         cartEntry = cartEntryController.createCartEntry(2, product.getId());
     }
@@ -135,11 +133,9 @@ class JavaUnitTestsApplicationTests {
     @Test
     @Order(9)
     void givenTwoUsers_WhenSortedByNumberOfOrders_ThenOrderCorrect() {
-        user = new User();
-        user.setName("nurof3n2");
-        user.setEmail("andy.cioc@yahoo.ro");
-        user.setPassword("123456");
-        user = userController.createUser(user);
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest("Gogu alalalt", "gogu2@yahoo.ro",
+                "gogu68");
+        user = marketController.registerUser(authenticationRequest);
         List<User> users = marketController.getUsersSortedByNumberOfOrders();
         assert users.size() == 2;
         assert users.get(0).getOrderHistory().size() >= users.get(1).getOrderHistory().size();
