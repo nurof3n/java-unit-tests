@@ -1,14 +1,18 @@
 package com.db.javaunittests;
 
 import com.db.javaunittests.authentication.AuthenticationRequest;
+import com.db.javaunittests.authentication.AuthenticationResponse;
 import com.db.javaunittests.controller.*;
+import com.db.javaunittests.exception.JWTException;
 import com.db.javaunittests.model.Cart;
 import com.db.javaunittests.model.CartEntry;
 import com.db.javaunittests.model.Product;
 import com.db.javaunittests.model.User;
+import com.db.javaunittests.service.JWTService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +34,8 @@ class JavaUnitTestsApplicationTests {
     private CartController cartController;
     @Autowired
     private WishlistController wishlistController;
+    @Autowired
+    private JWTService jwtService;
 
     private User user;
     private Product product;
@@ -133,8 +139,8 @@ class JavaUnitTestsApplicationTests {
     @Test
     @Order(9)
     void givenTwoUsers_WhenSortedByNumberOfOrders_ThenOrderCorrect() {
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest("Gogu alalalt", "gogu2@yahoo.ro",
-                "gogu68");
+        AuthenticationRequest authenticationRequest =
+                new AuthenticationRequest("Gogu alalalt", "gogu2@yahoo.ro", "gogu68");
         user = marketController.registerUser(authenticationRequest);
         List<User> users = marketController.getUsersSortedByNumberOfOrders();
         assert users.size() == 2;
@@ -151,6 +157,15 @@ class JavaUnitTestsApplicationTests {
 
     @Test
     @Order(11)
+    void givenAuthenticationRequest_WhenCredentialsAreCorrectCorrect_ThenAllGood() throws JWTException {
+        UserDetails userDetails = userController.getUserById(user.getId()).get();
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(null, "gogu2@yahoo.ro", "gogu68");
+        AuthenticationResponse authenticationResponse = marketController.authenticate(authenticationRequest);
+        assert jwtService.validateToken(authenticationResponse.getJwt(), userDetails);
+    }
+
+    @Test
+    @Order(12)
     void givenDatabase_WhenDeleteTables_ThenTablesAreEmpty() {
         userController.deleteAllUsers();
         productController.deleteAllProducts();
@@ -160,4 +175,6 @@ class JavaUnitTestsApplicationTests {
         assert cartController.getAllCarts().size() == 0;
         assert wishlistController.getAllWishlists().size() == 0;
     }
+
+
 }

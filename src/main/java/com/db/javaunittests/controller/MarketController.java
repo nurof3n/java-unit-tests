@@ -47,18 +47,18 @@ public class MarketController {
      * @return an authentication response containing a JWT if successful
      */
     @PostMapping(value = "/auth")
-    public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
         // authenticate the user with given credentials
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                         authenticationRequest.getPassword()));
         // set authentication in the context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // find user by email
-        Optional<User> user = userService.findUserByEmail(authenticationRequest.getEmail());
+        Optional<User> user = userService.findUserByEmail(authenticationRequest.getUsername());
         if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User with email " + authenticationRequest.getEmail() + " not found");
+            throw new UsernameNotFoundException("User with email " + authenticationRequest.getUsername() + " not found");
         }
 
         // create a JWT and return it in the response
@@ -75,15 +75,15 @@ public class MarketController {
     @PostMapping(value = "/register")
     public User registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
         // check if email is already registered
-        if (userService.findUserByEmail(authenticationRequest.getEmail()).isPresent()) {
-            throw new UsernameNotFoundException("User with email " + authenticationRequest.getEmail() + " not found");
+        if (userService.findUserByEmail(authenticationRequest.getUsername()).isPresent()) {
+            throw new UsernameNotFoundException("User with email " + authenticationRequest.getUsername() + " not found");
         }
 
         // create and persist the user
         User user = new User();
         user.setName(authenticationRequest.getName());
-        user.setEmail(authenticationRequest.getEmail());
-        user.setEmail(authenticationRequest.getEmail());
+        user.setEmail(authenticationRequest.getUsername());
+        user.setEmail(authenticationRequest.getUsername());
         // encrypt the password
         user.setPassword(bCryptPasswordEncoder.encode(authenticationRequest.getPassword()));
         user.setEnabled(true);

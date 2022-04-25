@@ -71,30 +71,30 @@ public class JWTService {
     /**
      * Validates the token associated with the user details.
      *
-     * @param token to validate
-     * @param user
+     * @param token       to validate
+     * @param userDetails details of the user
      * @return true if valid
      * @throws JWTException in case of invalid token
      */
-    public Boolean validateToken(String token, User user) throws JWTException {
+    public Boolean validateToken(String token, UserDetails userDetails) throws JWTException {
         final String email = extractEmail(token);
 
-        if (!email.equals((user.getUsername()))) {
+        if (!email.equals((userDetails.getUsername()))) {
             throw new JWTException(email + " - user token is invalid.");
         }
         if (isTokenExpired(token)) {
             throw new JWTException(email + " - user token is expired.");
         }
-        if (!user.isEnabled()) {
+        if (!userDetails.isEnabled()) {
             throw new JWTException(email + " - user is disabled.");
         }
-        if (!user.isAccountNonExpired()) {
+        if (!userDetails.isAccountNonExpired()) {
             throw new JWTException(email + " - user account is expired.");
         }
-        if (!user.isCredentialsNonExpired()) {
+        if (!userDetails.isCredentialsNonExpired()) {
             throw new JWTException(email + " - user credentials are expired.");
         }
-        if (!user.isAccountNonLocked()) {
+        if (!userDetails.isAccountNonLocked()) {
             throw new JWTException(email + " - user the account is locked.");
         }
 

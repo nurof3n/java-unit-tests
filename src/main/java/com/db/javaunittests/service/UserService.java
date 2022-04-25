@@ -3,6 +3,9 @@ package com.db.javaunittests.service;
 import com.db.javaunittests.model.*;
 import com.db.javaunittests.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -10,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -268,5 +271,14 @@ public class UserService {
             throw new IllegalArgumentException("User with id " + id + " does not exist");
         }
         return user.get().getOrderHistory();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = findUserByEmail(username);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User with email " + username + " not found");
+        }
+        return user.get();
     }
 }
